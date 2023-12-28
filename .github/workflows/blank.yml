@@ -48,6 +48,7 @@ jobs:
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
+          
       - name: Upload Release Asset
         id: upload-release-asset 
         uses: Fhwang0926/upload-release-asset@v1.1.8
