@@ -24,13 +24,17 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
+        name: checkout
 
       # Runs a single command using the runners shell
       - uses: msys2/setup-msys2@v2
+        name: set up 
         with:
           msystem: MINGW64
           install: mingw-w64-x86_64-gcc
+      
       - shell: msys2 {0}
+        name: run gcc
         run: |
           gcc -O2 -s -mwindows -mfpmath=sse -mieee-fp -fno-exceptions -fdata-sections -ffunction-sections -Wl,--gc-sections -fipa-pta -ffreestanding -fno-stack-check -fno-ident -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables -Wl,--build-id=none -Wl,-O1 -Wl,--as-needed -Wl,--no-insert-timestamp -Wl,--no-seh -flto -o "../strimble.exe" win32_starter.c -lshlwapi
       
