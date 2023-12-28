@@ -33,5 +33,24 @@ jobs:
       - shell: msys2 {0}
         run: |
           gcc -O2 -s -mwindows -mfpmath=sse -mieee-fp -fno-exceptions -fdata-sections -ffunction-sections -Wl,--gc-sections -fipa-pta -ffreestanding -fno-stack-check -fno-ident -fomit-frame-pointer -fno-unwind-tables -fno-asynchronous-unwind-tables -Wl,--build-id=none -Wl,-O1 -Wl,--as-needed -Wl,--no-insert-timestamp -Wl,--no-seh -flto -o "../strimble.exe" win32_starter.c -lshlwapi
-
+      
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: Fhwang0926/upload-release-asset@v1.1.8
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_name: ./strimble.exe # path + filename
+          asset_label: latest
           
