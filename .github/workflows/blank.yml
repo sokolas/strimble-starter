@@ -36,26 +36,32 @@ jobs:
       - name: build LuaJIT
         run:  cmd /c "msvcbuild.bat"
         working-directory: ${{github.workspace}}\LuaJIT\src
+
+      - name: build starter
+        run: cmd /c "msbuild strimble-starter.vcxproj /p:configuration=release /p:platform=x64"
+
+      - name: pack assets
+        run: Compress-Archive ".\LuaJIT\src\lua51.dll",".\x64\release\strimble-starter.exe" -Destination strimble.zip
+        
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
           
-      # - name: Create Release
-        # id: create_release
-        # uses: actions/create-release@v1
-        # env:
-          # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        # with:
-          # tag_name: ${{ github.ref }}
-          # release_name: Release ${{ github.ref }}
-          # draft: false
-          # prerelease: false
-          
-      # - name: Upload Release Asset
-        # id: upload-release-asset 
-        # uses: Fhwang0926/upload-release-asset@v1.1.8
-        # env:
-          # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        # with:
-          # upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-          # asset_name: strimble.exe # path + filename
-          # asset_path: ./strimble.exe
-          # asset_label: latest
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: Fhwang0926/upload-release-asset@v1.1.8
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_name: strimble-${{ github.ref }}.zip # path + filename
+          asset_path: ./strimble.zip
+          asset_label: latest
           
