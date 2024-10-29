@@ -44,7 +44,7 @@ jobs:
         run: New-Item -Path "." -Name "include" -ItemType "directory"
 
       - name: copy luajit headers
-        run: Copy-Item ".\LuaJIT\src\lauxlib.h",".\LuaJIT\src\lua.h",".\LuaJIT\src\lua.hpp",".\LuaJIT\src\luaconf.h",".\LuaJIT\src\lualib.h", -Destination ".\include"
+        run: Copy-Item ".\LuaJIT\src\lauxlib.h",".\LuaJIT\src\lua.h",".\LuaJIT\src\lua.hpp",".\LuaJIT\src\luaconf.h",".\LuaJIT\src\lualib.h" -Destination ".\include"
         
       - name: pack assets
         run: Compress-Archive ".\include",".\LuaJIT\src\luajit.exe",".\LuaJIT\src\lua51.dll",".\x64\release\strimble-starter.exe" -Destination strimble.zip
