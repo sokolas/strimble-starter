@@ -39,9 +39,15 @@ jobs:
 
       - name: build starter
         run: cmd /c "msbuild strimble-starter.vcxproj /p:configuration=release /p:platform=x64"
+      
+      - name: create include dir
+        run: New-Item -Path "." -Name "include" -ItemType "directory"
 
+      - name: copy luajit headers
+        run: Copy-Item ".\LuaJIT\src\lauxlib.h",".\LuaJIT\src\lua.h.h",".\LuaJIT\src\lua.hpp",".\LuaJIT\src\luaconf.h",".\LuaJIT\src\lualib.h", -Destination ".\include"
+        
       - name: pack assets
-        run: Compress-Archive ".\LuaJIT\src\luajit.exe",".\LuaJIT\src\lua51.dll",".\x64\release\strimble-starter.exe" -Destination strimble.zip
+        run: Compress-Archive ".\include",".\LuaJIT\src\luajit.exe",".\LuaJIT\src\lua51.dll",".\x64\release\strimble-starter.exe" -Destination strimble.zip
         
       - name: Create Release
         id: create_release
